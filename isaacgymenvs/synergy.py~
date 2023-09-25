@@ -7,4 +7,5 @@ class Model(Vectask):
 
     def create_sim(self, args):
         sim_params = gymapi.SimParams()
-        """ read from yaml file is better? """ 
+        
+        """ read from yaml file is better? """
