@@ -83,3 +83,60 @@ pose.r = gymapi.Quat(-0.707107, 0.0, 0.0, 0.707107) # oriantation quaternion
    """ 
 
 actor_handle = gym.create_actor(env, asset, pose, "MyActor", 0, 1)
+
+# set up the env grid
+num_envs = 64
+envs_per_row = 8
+env_spacing = 2.0
+env_lower = gymapi.Vec3(-env_spacing, 0.0, -env_spacing)
+env_upper = gymapi.Vec3(env_spacing, env_spacing, env_spacing)
+
+# cache some common handles for later use
+envs = []
+actor_handles = []
+
+# create and populate the environments
+for i in range(num_envs):
+    env = gym.create_env(sim, env_lower, env_upper, envs_per_row)
+    envs.append(env)
+
+    height = random.uniform(1.0, 2.5)
+
+    pose = gymapi.Transform()
+    pose.p = gymapi.Vec3(0.0, height, 0.0)
+
+    actor_handle = gym.create_actor(env, asset, pose, "MyActor", i, 1)
+    actor_handles.append(actor_handle)
+
+
+'''
+Running the Simulation
+'''
+while True:
+    # step the physics
+    gym.simulate(sim)
+    gym.fetch_results(sim, True)
+
+
+'''
+Adding a Viewer
+'''
+cam_props = gymapi.CameraProperties()
+viewer = gym.create_viewer(sim, cam_props)
+gym.step_graphics(sim);
+gym.draw_viewer(viewer, sim, True)
+gym.sync_frame_time(sim)
+
+while not gym.query_viewer_has_closed(viewer):
+    # step the physics
+    gym.simulate(sim)
+    gym.refresh_results(sim, True)
+
+    # update the viewer
+    gym.step_graphics(sim);
+    gym.draw_viewer(viewer, sim, True)
+
+    # wait for dt to elapse in real time.
+    # this synchronizes the physics simulation with the rendering rate.
+    gym.sync_frame_time(sim)
+    

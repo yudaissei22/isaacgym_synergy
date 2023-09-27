@@ -1,0 +1,8 @@
+
+
+
+
+def create_envs(self, )
+asset_root = "../../assets"
+asset_file = "mjcf/nv_humanoid.xml"
+asset = gym.load_asset(sim, asset_root_ asset_file)
